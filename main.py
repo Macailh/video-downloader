@@ -1,13 +1,13 @@
 from pytube import YouTube
 
 
-def download_video(url, resolution='720p', path='./'):
-
-    filename = "video.mp4"
-
+def download_video(url, resolution='720p'):
     video = YouTube(url)
+    filename = f"{video.title}.mp4"
+    output_path = './'
+
     stream = video.streams.filter(res=resolution).first()
-    stream.download(filename=filename, output_path=path)
+    stream.download(filename=filename, output_path=output_path)
 
 
 if __name__ == "__main__":
