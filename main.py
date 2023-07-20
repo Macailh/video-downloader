@@ -1,8 +1,12 @@
+import typer
 from pytube import YouTube
 from pytube.exceptions import VideoUnavailable, RegexMatchError
 
+app = typer.Typer()
 
-def download_video(url, resolution='720p'):
+
+@app.command()
+def download_video(url: str, resolution: str):
     try:
         # Get video information
         video = YouTube(url)
@@ -17,28 +21,24 @@ def download_video(url, resolution='720p'):
         stream = video.streams.filter(res=resolution).first()
 
         if not stream:
-            print(
-                f"Resolution '{resolution}'not found. Downloading in the best resolution.")
+            typer.echo(
+                f"Resolution '{resolution}' not found. Downloading in the best resolution.")
             stream = video.streams.get_highest_resolution()
 
-        print(
+        typer.echo(
             f"Downloading '{video.title}' in resolution '{stream.resolution}'...")
         # Download the video
         stream.download(filename=filename, output_path=output_path)
 
-        print("¡Download finished!")
+        typer.echo("¡Download finished!")
 
     except VideoUnavailable:
-        print("The video is not available for download")
+        typer.echo("The video is not available for download")
     except RegexMatchError:
-        print("Video URL format error")
+        typer.echo("Video URL format error")
     except Exception as e:
-        print(f"An error occurred during download: {str(e)}")
+        typer.echo(f"An error occurred during download: {str(e)}")
 
 
 if __name__ == "__main__":
-    url = input("Ingresa la URL del video de YouTube que deseas descargar: ")
-    resolution = input(
-        "Ingresa la resolución deseada (ej. 720p, 1080p, etc.): ")
-
-    download_video(url, resolution)
+    app()
