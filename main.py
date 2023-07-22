@@ -1,6 +1,7 @@
 import typer
 from pytube import YouTube
-from pytube.exceptions import VideoUnavailable, RegexMatchError
+from pytube.exceptions import VideoUnavailable, RegexMatchError, PytubeError
+
 
 app = typer.Typer()
 
@@ -67,8 +68,8 @@ def download_video(url: str, resolution: str):
         typer.echo("The video is not available for download")
     except RegexMatchError:
         typer.echo("Video URL format error")
-    except Exception as e:
-        typer.echo(f"An error occurred during download: {str(e)}")
+    except PytubeError as error:
+        typer.echo(f"An error occurred during download: {str(error)}")
 
 
 if __name__ == "__main__":
